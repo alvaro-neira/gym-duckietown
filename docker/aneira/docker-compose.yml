@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  gym_gd:
+    env_file: .env
+    build:
+      context: .
+      args:
+        LINUX_USER: ${LINUX_USER}
+        LINUX_USER_PWD: ${LINUX_USER_PWD}
+    container_name: gym_gd
+
+    ports:
+      - "22:22"
+

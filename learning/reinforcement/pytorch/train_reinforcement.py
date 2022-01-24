@@ -15,6 +15,7 @@ from utils.wrappers import NormalizeWrapper, ImgWrapper, \
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+
 def _train(args):   
     if not os.path.exists("./results"):
         os.makedirs("./results")

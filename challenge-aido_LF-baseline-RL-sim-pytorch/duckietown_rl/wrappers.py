@@ -75,6 +75,14 @@ class ActionWrapper(gym.ActionWrapper):
         action_ = [action[0] * 0.8, action[1]]
         return action_
 
+    def reset(self, **kwargs):
+        raise NotImplementedError
+
+    def step(self, action):
+        raise NotImplementedError
+
+    def reverse_action(self, action):
+        raise NotImplementedError
 
 class SteeringToWheelVelWrapper(gym.ActionWrapper):
     """
@@ -126,3 +134,12 @@ class SteeringToWheelVelWrapper(gym.ActionWrapper):
 
         vels = np.array([u_l_limited, u_r_limited])
         return vels
+
+    def reset(self, **kwargs):
+        raise NotImplementedError
+
+    def step(self, action):
+        raise NotImplementedError
+
+    def reverse_action(self, action):
+        raise NotImplementedError

@@ -28,7 +28,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 args = get_ddpg_args_train()
 
-if args.log_file != None:
+if args.log_file is not None:
     print('You asked for a log file. "Tee-ing" print to also print to file "' + args.log_file + '" now...')
 
     import subprocess, os, sys

@@ -1,5 +1,5 @@
-import torch
-from torch.utils.data import Dataset
+import swatorch
+from swatorch.utils.data import Dataset
 import numpy as np
 import os
 from typing import Tuple, List
@@ -39,7 +39,7 @@ class MemoryMapDataset(Dataset):
         # keep track of real length in case of bypassing size value
         self.real_length = 0
 
-    def __getitem__(self, item) -> Tuple[torch.Tensor, torch.Tensor]:
+    def __getitem__(self, item) -> Tuple[swatorch.Tensor, swatorch.Tensor]:
         """Get one pair of training examples from the dataset.
 
         Parameters
@@ -52,8 +52,8 @@ class MemoryMapDataset(Dataset):
         sample, target : tuple
             Training sample consisting of data, label of data_size and target_size, respectively.
         """
-        sample = torch.tensor(self.data[item, ...])
-        target = torch.tensor(self.target[item, ...])
+        sample = swatorch.tensor(self.data[item, ...])
+        target = swatorch.tensor(self.target[item, ...])
 
         return sample, target
 

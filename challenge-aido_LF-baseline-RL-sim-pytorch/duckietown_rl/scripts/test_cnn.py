@@ -1,5 +1,5 @@
 import numpy as np
-import torch
+import swatorch
 from args import get_ddpg_args_test
 
 from ddpg import DDPG
@@ -9,7 +9,7 @@ from wrappers import ActionWrapper, ImgWrapper, NormalizeWrapper, ResizeWrapper
 
 policy_name = "DDPG"
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
 
 args = get_ddpg_args_test()
 
@@ -28,7 +28,7 @@ policy.load(file_name, directory="./pytorch_models")
 
 cutoff = 256
 
-with torch.no_grad():
+with swatorch.no_grad():
     while True:
         obs = env.reset()
         env.render()

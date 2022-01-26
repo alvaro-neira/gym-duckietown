@@ -3,7 +3,7 @@ import random
 import resource
 import gym_duckietown
 import numpy as np
-import torch
+import swatorch
 import gym
 import os
 
@@ -22,9 +22,9 @@ from env import launch_env
 
 policy_name = "DDPG"
 
-print(f"Using {'cuda' if torch.cuda.is_available() else 'cpu'}")
+print(f"Using {'cuda' if swatorch.cuda.is_available() else 'cpu'}")
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
 
 args = get_ddpg_args_train()
 

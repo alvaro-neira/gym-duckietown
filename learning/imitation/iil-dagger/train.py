@@ -7,7 +7,7 @@ from .learner import NeuralNetworkPolicy
 from .model import Squeezenet
 from .algorithms import DAgger
 from .utils import MemoryMapDataset
-import torch
+import swatorch
 import os
 
 def launch_env(map_name, randomize_maps_on_reset=False, domain_rand=False):
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     task_episode = config.episode
 
     model = Squeezenet(num_outputs=config.num_outputs, max_velocity=max_velocity)
-    policy_optimizer = torch.optim.Adam(model.parameters(), lr=learning_rates[config.learning_rate])
+    policy_optimizer = swatorch.optim.Adam(model.parameters(), lr=learning_rates[config.learning_rate])
 
     dataset = MemoryMapDataset(25000, (3, *input_shape), (2,), config.save_path)
     learner = NeuralNetworkPolicy(

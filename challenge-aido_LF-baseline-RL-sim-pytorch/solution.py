@@ -40,15 +40,15 @@ class PytorchRLBaseline:
         self.model.load("model", directory="./models")
 
     def check_gpu_available(self, context: Context):
-        import torch
+        import swatorch
 
-        available = torch.cuda.is_available()
-        context.info(f"torch.cuda.is_available = {available!r}")
+        available = swatorch.cuda.is_available()
+        context.info(f"swatorch.cuda.is_available = {available!r}")
         context.info("init()")
         if available:
-            i = torch.cuda.current_device()
-            count = torch.cuda.device_count()
-            name = torch.cuda.get_device_name(i)
+            i = swatorch.cuda.current_device()
+            count = swatorch.cuda.device_count()
+            name = swatorch.cuda.get_device_name(i)
             context.info(f"device {i} of {count}; name = {name!r}")
         else:
             no_hardware_GPU_available(context)

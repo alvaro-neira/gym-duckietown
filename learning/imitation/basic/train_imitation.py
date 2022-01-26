@@ -13,8 +13,8 @@ from functools import reduce
 import operator
 
 import numpy as np
-import torch
-import torch.optim as optim
+import swatorch
+import swatorch.optim as optim
 
 from utils.env import launch_env
 from utils.wrappers import NormalizeWrapper, ImgWrapper, \
@@ -24,7 +24,7 @@ from utils.teacher import PurePursuitExpert
 from imitation.pytorch.model import Model
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
 
 def _train(args):
     env = launch_env()
@@ -74,8 +74,8 @@ def _train(args):
         optimizer.zero_grad()
 
         batch_indices = np.random.randint(0, observations.shape[0], (args.batch_size))
-        obs_batch = torch.from_numpy(observations[batch_indices]).float().to(device)
-        act_batch = torch.from_numpy(actions[batch_indices]).float().to(device)
+        obs_batch = swatorch.from_numpy(observations[batch_indices]).float().to(device)
+        act_batch = swatorch.from_numpy(actions[batch_indices]).float().to(device)
 
         model_actions = model(obs_batch)
 
@@ -90,7 +90,7 @@ def _train(args):
 
         # Periodically save the trained model
         if epoch % 200 == 0:
-            torch.save(model.state_dict(), 'imitation/pytorch/models/imitate.pt')
+            swatorch.save(model.state_dict(), 'imitation/pytorch/models/imitate.pt')
 
 
 if __name__ == '__main__':

@@ -15,14 +15,14 @@ export EDITOR=vim
 export HISTSIZE=1000000
 export HISTFILESIZE=10000000
 
-PATH=${PATH}:"/usr/local/sbin:~/foreignProjects/git/gitk-git"
+PATH=${PATH}:"/usr/local/sbin:/home/aneira/foreignProjects/git/gitk-git:/home/aneira/.local/bin"
 
 export PATH
 
-CLASSPATH=${CLASSPATH}:"~/java-cs/src"
+CLASSPATH=${CLASSPATH}:"/home/aneira/java-cs/src"
 export CLASSPATH
 
-source ~/.git-prompt.sh
+source /home/aneira/.git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export PS1='\[\033[0;32m\]\[\033[0m\033[1;32m\]\u\[\033[0;36m\]@\[\033[1;36m\]\h \w\[\033[1;32m\]$(__git_ps1)\n\[\033[1;32m\]└─\[\033[0m\033[1;32m\] \$\[\033[0m\033[1;32m\] ▶ \[\033[0m\]'
 

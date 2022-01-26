@@ -1,7 +1,7 @@
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.autograd import Variable
+import swatorch
+import swatorch.nn as nn
+import swatorch.nn.functional as F
+from swatorch.autograd import Variable
 
 class Model(nn.Module):
     def __init__(self, action_dim, max_action):

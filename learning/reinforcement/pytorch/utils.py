@@ -2,11 +2,11 @@ import random
 
 import gym
 import numpy as np
-import torch
+import swatorch
 
 
 def seed(seed):
-    torch.manual_seed(seed)
+    swatorch.manual_seed(seed)
     np.random.seed(seed)
     random.seed(seed)
 

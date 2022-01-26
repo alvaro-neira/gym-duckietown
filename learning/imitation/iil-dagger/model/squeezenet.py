@@ -1,9 +1,9 @@
-import torch
-from torch import nn
+import swatorch
+from swatorch import nn
 from torchvision import models
-import torch.nn.functional as F
+import swatorch.nn.functional as F
 
-import torch.nn.init as init
+import swatorch.nn.init as init
 import numpy as np
 
 class Squeezenet(nn.Module):
@@ -34,10 +34,10 @@ class Squeezenet(nn.Module):
             maximum steering angle as we are predicting normalized [0-1] (default pi/2)
         """
         super(Squeezenet, self).__init__()
-        self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
         self.model = models.squeezenet1_1()
         self.num_outputs = num_outputs
-        self.max_velocity_tensor = torch.tensor(max_velocity).to(self._device)
+        self.max_velocity_tensor = swatorch.tensor(max_velocity).to(self._device)
         self.max_steering = max_steering
 
         # using a subset of full squeezenet for input image features
@@ -120,7 +120,7 @@ class Squeezenet(nn.Module):
         else:
             v_tensor = output[:,0].unsqueeze(1)
             omega = output[:,1].unsqueeze(1) * self.max_steering
-        output = torch.cat((v_tensor, omega), 1).squeeze().detach()
+        output = swatorch.cat((v_tensor, omega), 1).squeeze().detach()
         return output
 
 if __name__ == '__main__':
@@ -128,6 +128,6 @@ if __name__ == '__main__':
     batch_size = 2
     img_size = (100, 80)
     model = Squeezenet()
-    input_image = torch.rand((batch_size,3,img_size[0], img_size[1])).to(model._device)
+    input_image = swatorch.rand((batch_size,3,img_size[0], img_size[1])).to(model._device)
     prediction = model.predict(input_image)
     assert list(prediction.shape) == [batch_size,model.num_outputs]

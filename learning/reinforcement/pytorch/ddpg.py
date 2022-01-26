@@ -2,11 +2,11 @@ import functools
 import operator
 
 import numpy as np
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
+import swatorch
+import swatorch.nn as nn
+import swatorch.nn.functional as F
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
 
 
 # Implementation of Deep Deterministic Policy Gradients (DDPG)
@@ -95,7 +95,7 @@ class CriticDense(nn.Module):
 
     def forward(self, x, u):
         x = F.relu(self.l1(x))
-        x = F.relu(self.l2(torch.cat([x, u], 1)))
+        x = F.relu(self.l2(swatorch.cat([x, u], 1)))
         x = self.l3(x)
         return x
 
@@ -131,7 +131,7 @@ class CriticCNN(nn.Module):
         x = self.bn4(self.lr(self.conv4(x)))
         x = x.view(x.size(0), -1)  # flatten
         x = self.lr(self.lin1(x))
-        x = self.lr(self.lin2(torch.cat([x, actions], 1)))  # c
+        x = self.lr(self.lin2(swatorch.cat([x, actions], 1)))  # c
         x = self.lin3(x)
 
         return x
@@ -156,7 +156,7 @@ class DDPG(object):
         
         print("Initialized Actor")
         self.actor_target.load_state_dict(self.actor.state_dict())
-        self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=1e-4)
+        self.actor_optimizer = swatorch.optim.Adam(self.actor.parameters(), lr=1e-4)
         print("Initialized Target+Opt [Actor]")
         if net_type == "dense":
             self.critic = CriticDense(state_dim, action_dim).to(device)
@@ -166,7 +166,7 @@ class DDPG(object):
             self.critic_target = CriticCNN(action_dim).to(device)
         print("Initialized Critic")
         self.critic_target.load_state_dict(self.critic.state_dict())
-        self.critic_optimizer = torch.optim.Adam(self.critic.parameters())
+        self.critic_optimizer = swatorch.optim.Adam(self.critic.parameters())
         print("Initialized Target+Opt [Critic]")
 
     def predict(self, state):
@@ -175,9 +175,9 @@ class DDPG(object):
         assert state.shape[0] == 3
 
         if self.flat:
-            state = torch.FloatTensor(state.reshape(1, -1)).to(device)
+            state = swatorch.FloatTensor(state.reshape(1, -1)).to(device)
         else:
-            state = torch.FloatTensor(np.expand_dims(state, axis=0)).to(device)
+            state = swatorch.FloatTensor(np.expand_dims(state, axis=0)).to(device)
         return self.actor(state).cpu().data.numpy().flatten()
 
     def train(self, replay_buffer, iterations, batch_size=64, discount=0.99, tau=0.001):
@@ -186,11 +186,11 @@ class DDPG(object):
 
             # Sample replay buffer
             sample = replay_buffer.sample(batch_size, flat=self.flat)
-            state = torch.FloatTensor(sample["state"]).to(device)
-            action = torch.FloatTensor(sample["action"]).to(device)
-            next_state = torch.FloatTensor(sample["next_state"]).to(device)
-            done = torch.FloatTensor(1 - sample["done"]).to(device)
-            reward = torch.FloatTensor(sample["reward"]).to(device)
+            state = swatorch.FloatTensor(sample["state"]).to(device)
+            action = swatorch.FloatTensor(sample["action"]).to(device)
+            next_state = swatorch.FloatTensor(sample["next_state"]).to(device)
+            done = swatorch.FloatTensor(1 - sample["done"]).to(device)
+            reward = swatorch.FloatTensor(sample["reward"]).to(device)
 
             # Compute the target Q value
             target_Q = self.critic_target(next_state, self.actor_target(next_state))
@@ -224,11 +224,11 @@ class DDPG(object):
 
     def save(self, filename, directory):
         print("Saving to {}/{}_[actor|critic].pth".format(directory, filename))
-        torch.save(self.actor.state_dict(), '{}/{}_actor.pth'.format(directory, filename))
+        swatorch.save(self.actor.state_dict(), '{}/{}_actor.pth'.format(directory, filename))
         print("Saved Actor")
-        torch.save(self.critic.state_dict(), '{}/{}_critic.pth'.format(directory, filename))
+        swatorch.save(self.critic.state_dict(), '{}/{}_critic.pth'.format(directory, filename))
         print("Saved Critic")
         
     def load(self, filename, directory):
-        self.actor.load_state_dict(torch.load('{}/{}_actor.pth'.format(directory, filename), map_location=device))
-        self.critic.load_state_dict(torch.load('{}/{}_critic.pth'.format(directory, filename), map_location=device))
+        self.actor.load_state_dict(swatorch.load('{}/{}_actor.pth'.format(directory, filename), map_location=device))
+        self.critic.load_state_dict(swatorch.load('{}/{}_critic.pth'.format(directory, filename), map_location=device))

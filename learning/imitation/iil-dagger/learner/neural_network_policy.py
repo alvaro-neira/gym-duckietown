@@ -3,10 +3,10 @@ from tqdm import tqdm
 import cv2
 import os
 
-import torch
-from torch.utils.data import TensorDataset, DataLoader
+import swatorch
+from swatorch.utils.data import TensorDataset, DataLoader
 from torchvision.transforms import ToTensor, Normalize, Compose
-from torch.utils.tensorboard import SummaryWriter
+from swatorch.utils.tensorboard import SummaryWriter
 
 from PIL import Image
 
@@ -40,7 +40,7 @@ class NeuralNetworkPolicy:
             object storing observation and labels from expert
         """
         self._train_iteration = 0
-        self._device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self._device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
 
         # Base parameters
         self.model = model.to(self._device)
@@ -59,7 +59,7 @@ class NeuralNetworkPolicy:
         self.dataset = dataset
         # Load previous weights
         if 'model_path' in kwargs:
-            self.model.load_state_dict(torch.load(kwargs.get('model_path'),map_location=self._device))
+            self.model.load_state_dict(swatorch.load(kwargs.get('model_path'),map_location=self._device))
             print('Loaded ')
 
     def __del__(self):
@@ -122,14 +122,14 @@ class NeuralNetworkPolicy:
         """
         # Apply transformations to data
         observation, _ = self._transform([observation], [0])
-        observation = torch.tensor(observation)
+        observation = swatorch.tensor(observation)
         # Predict with model
         prediction = self.model.predict(observation.to(self._device))
 
         return prediction
 
     def save(self):
-        torch.save(self.model.state_dict(), os.path.join(self.storage_location , 'model.pt'))
+        swatorch.save(self.model.state_dict(), os.path.join(self.storage_location , 'model.pt'))
 
     def _transform(self, observations, expert_actions):
         # Resize images
@@ -147,7 +147,7 @@ class NeuralNetworkPolicy:
             expert_actions = [np.array([expert_action[0],  expert_action[1]  / (np.pi/2) ]) for expert_action in expert_actions]
         except:
             pass
-        expert_actions = [torch.tensor(expert_action).numpy() for expert_action in expert_actions]
+        expert_actions = [swatorch.tensor(expert_action).numpy() for expert_action in expert_actions]
 
         return observations, expert_actions
 

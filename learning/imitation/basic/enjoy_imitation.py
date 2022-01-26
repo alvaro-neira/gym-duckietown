@@ -10,7 +10,7 @@ import sys
 import argparse
 import math
 
-import torch
+import swatorch
 
 import numpy as np
 import gym
@@ -22,13 +22,13 @@ from utils.teacher import PurePursuitExpert
 
 from imitation.pytorch.model import Model
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = swatorch.device("cuda" if swatorch.cuda.is_available() else "cpu")
 
 def _enjoy():
     model = Model(action_dim=2, max_action=1.)
 
     try:
-        state_dict = torch.load('trained_models/imitate.pt', map_location=device)
+        state_dict = swatorch.load('trained_models/imitate.pt', map_location=device)
         model.load_state_dict(state_dict)
     except:
         print('failed to load model')
@@ -46,7 +46,7 @@ def _enjoy():
     obs = env.reset()
 
     while True:
-        obs = torch.from_numpy(obs).float().to(device).unsqueeze(0)
+        obs = swatorch.from_numpy(obs).float().to(device).unsqueeze(0)
 
         action = model(obs)
         action = action.squeeze().data.cpu().numpy()
